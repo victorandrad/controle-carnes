@@ -10,25 +10,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p ${{ secrets.HOSTINGER_PORT }} -H ${{ secrets.HOSTINGER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Copy .env to VPS
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        with:
-          host: ${{ secrets.HOSTINGER_HOST }}
-          username: ${{ secrets.HOSTINGER_USER }}
-          key: ${{ secrets.HOSTINGER_SSH_KEY }}
-          port: ${{ secrets.HOSTINGER_PORT }}
-          envs: JWT_SECRET,POSTGRES_PASSWORD
-          script: |
-            set -e
-            cd ~/controle-carnes
-            git pull origin main
-            cat > .env << EOF
-            JWT_SECRET=$JWT_SECRET
-            POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-            EOF
-            docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
-            docker compose -f docker-compose.prod.yml exec -T backend npx prisma migrate deploy
-            docker image prune -f
+        run: |
+          printf 'JWT_SECRET=%s\nPOSTGRES_PASSWORD=%s\n' "$JWT_SECRET" "$POSTGRES_PASSWORD" > /tmp/prod.env
+          scp -i ~/.ssh/deploy_key -P ${{ secrets.HOSTINGER_PORT }} \
+            /tmp/prod.env \
+            ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}:~/controle-carnes/.env
+
+      - name: Deploy
+        run: |
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.HOSTINGER_PORT }} \
+            ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }} << 'ENDSSH'
+          set -e
+          cd ~/controle-carnes
+          git pull origin main
+          docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
+          docker compose -f docker-compose.prod.yml exec -T backend npx prisma migrate deploy
+          docker image prune -f
+          ENDSSH

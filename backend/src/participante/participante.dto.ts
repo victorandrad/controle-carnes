@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const CriarParticipanteSchema = z.object({
   nome: z.string().min(1),
-  cpf: z.string().regex(/^\d{11}$/).optional(),
+  cpf: z.string().transform(v => v.replace(/\D/g, '')).pipe(z.string().regex(/^\d{11}$/)).optional(),
   telefone: z.string().optional(),
   endereco: z.string().optional(),
 });

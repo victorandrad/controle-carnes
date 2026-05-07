@@ -31,16 +31,18 @@ async function main() {
   const campanhaExistente = await prisma.campanha.findFirst({
     where: { nome: 'Sorteio do Carro 2026' },
   });
-  const campanha = campanhaExistente ?? await prisma.campanha.create({
-    data: {
-      nome: 'Sorteio do Carro 2026',
-      premio: 'Volkswagen Polo 0km',
-      dataSorteio: new Date('2026-12-31'),
-      valorCarne: 120.0,
-      numParcelas: 12,
-      maxCarnes: 300,
-    },
-  });
+  const campanha =
+    campanhaExistente ??
+    (await prisma.campanha.create({
+      data: {
+        nome: 'Sorteio do Carro 2026',
+        premio: 'Volkswagen Polo 0km',
+        dataSorteio: new Date('2026-12-31'),
+        valorCarne: 120.0,
+        numParcelas: 12,
+        maxCarnes: 300,
+      },
+    }));
 
   console.log('Seed concluído:');
   console.log('  Admin: admin@igreja.com / admin123');

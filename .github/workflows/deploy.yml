@@ -15,26 +15,33 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.HOSTINGER_SSH_KEY }}" | base64 -d > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile /dev/null" > ~/.ssh/config
 
-      - name: Copy .env to VPS
+      - name: Write .env on VPS
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: |
-          printf 'JWT_SECRET=%s\nPOSTGRES_PASSWORD=%s\n' "$JWT_SECRET" "$POSTGRES_PASSWORD" > /tmp/prod.env
-          scp -i ~/.ssh/deploy_key -P ${{ secrets.HOSTINGER_PORT }} \
-            /tmp/prod.env \
-            ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}:~/controle-carnes/.env
+          printf 'JWT_SECRET=%s\nPOSTGRES_PASSWORD=%s\n' "$JWT_SECRET" "$POSTGRES_PASSWORD" | \
+            ssh -i ~/.ssh/deploy_key \
+                -p ${{ secrets.HOSTINGER_PORT }} \
+                -o StrictHostKeyChecking=no \
+                -o BatchMode=yes \
+                -o ConnectTimeout=30 \
+                ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }} \
+                "cat > ~/controle-carnes/.env"
 
       - name: Deploy
         run: |
-          ssh -i ~/.ssh/deploy_key -p ${{ secrets.HOSTINGER_PORT }} \
-            ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }} << 'ENDSSH'
-          set -e
-          cd ~/controle-carnes
-          git pull origin main
-          docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
-          docker compose -f docker-compose.prod.yml exec -T backend npx prisma migrate deploy
-          docker image prune -f
-          ENDSSH
+          ssh -i ~/.ssh/deploy_key \
+              -p ${{ secrets.HOSTINGER_PORT }} \
+              -o StrictHostKeyChecking=no \
+              -o BatchMode=yes \
+              -o ConnectTimeout=30 \
+              ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }} '
+            set -e
+            cd ~/controle-carnes
+            git pull origin main
+            docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
+            docker compose -f docker-compose.prod.yml exec -T backend npx prisma migrate deploy
+            docker image prune -f
+          '

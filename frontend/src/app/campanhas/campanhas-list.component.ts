@@ -23,6 +23,10 @@ import { BrlPipe } from '../shared/pipes/brl.pipe';
 import { AuthService } from '../auth/auth.service';
 import { CampanhaAtivaService } from '../shared/services/campanha-ativa.service';
 
+function localDateStr(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 @Component({
   selector: 'app-campanhas-list',
   standalone: true,
@@ -679,7 +683,7 @@ export class CampanhasListComponent implements OnInit {
     this.api.post<any>('campanhas', {
       nome:        v.nome,
       premio:      v.premio,
-      dataSorteio: (v.dataSorteio as Date).toISOString().slice(0, 10),
+      dataSorteio: localDateStr(v.dataSorteio as Date),
       valorCarne:  v.valorCarne,
       numParcelas: v.numParcelas,
       maxCarnes:   v.maxCarnes,
@@ -702,7 +706,7 @@ export class CampanhasListComponent implements OnInit {
     this.editForm.reset({
       nome:        c.nome,
       premio:      c.premio,
-      dataSorteio: new Date(c.dataSorteio),
+      dataSorteio: new Date(c.dataSorteio.slice(0, 10) + 'T00:00:00'),
       maxCarnes:   c.maxCarnes,
     });
     this.editarVisivel = true;
@@ -718,7 +722,7 @@ export class CampanhasListComponent implements OnInit {
     this.api.patch<any>(`campanhas/${this.editandoCampanha.id}`, {
       nome:        v.nome,
       premio:      v.premio,
-      dataSorteio: (v.dataSorteio as Date).toISOString().slice(0, 10),
+      dataSorteio: localDateStr(v.dataSorteio as Date),
       maxCarnes:   v.maxCarnes,
     }).subscribe({
       next: () => {

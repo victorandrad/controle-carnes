@@ -24,6 +24,10 @@ import { ApiService } from '../shared/services/api.service';
 import { BrlPipe } from '../shared/pipes/brl.pipe';
 import { CampanhaAtivaService } from '../shared/services/campanha-ativa.service';
 
+function localDateStr(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 @Component({
   selector: 'app-pagamentos',
   standalone: true,
@@ -912,7 +916,7 @@ export class PagamentosComponent implements OnInit {
     const body: any = {
       parcelaId:     this.parcelaSelecionada.id,
       valorPago:     Number(v.valorPago),
-      dataPagamento: data.toISOString().slice(0, 10),
+      dataPagamento: localDateStr(data),
       metodo:        v.metodo,
     };
     if (v.referencia) body.referencia = v.referencia;

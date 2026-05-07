@@ -131,42 +131,58 @@ import { ApiService } from '../shared/services/api.service';
         background: #fff;
         border-bottom: 1px solid #f0f0f0;
         align-items: center;
-        padding: 0 16px;
-        justify-content: space-between;
+        padding: 0 12px;
+        gap: 10px;
         box-shadow: 0 1px 6px rgba(0,0,0,0.06);
       }
-      .mt-brand {
-        display: flex; align-items: center; gap: 8px;
-      }
       .mt-logo {
-        width: 30px; height: 30px; border-radius: 8px;
+        flex-shrink: 0;
+        width: 32px; height: 32px; border-radius: 9px;
         background: linear-gradient(135deg, #3b82f6, #1d4ed8);
         display: flex; align-items: center; justify-content: center;
-        font-size: 14px; color: #fff;
+        font-size: 15px; color: #fff;
+        box-shadow: 0 2px 6px rgba(59,130,246,0.25);
       }
-      .mt-title { font-size: 15px; font-weight: 700; color: #1a1a1a; }
 
-      .mt-right { display: flex; align-items: center; gap: 10px; }
-      .mt-campanha {
+      /* Campaign selector — ocupa o centro, tap target generoso */
+      .mt-camp-btn {
+        flex: 1; min-width: 0;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        background: #f5f8ff;
+        border: 1.5px solid #dbeafe;
+        border-radius: 10px;
+        padding: 4px 12px;
+        height: 38px;
+        gap: 1px;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .mt-camp-btn:active { background: #dbeafe; border-color: #93c5fd; }
+      .mt-camp-label {
+        font-size: 9.5px; color: #94a3b8; font-weight: 500;
+        line-height: 1; letter-spacing: 0.4px; text-transform: uppercase;
+      }
+      .mt-camp-row {
         display: flex; align-items: center; gap: 4px;
-        background: #f0f5ff; border-radius: 20px;
-        padding: 4px 10px;
+        max-width: 100%; overflow: hidden;
       }
       .mt-camp-nome {
-        font-size: 12px; font-weight: 600; color: #3b82f6;
-        max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-        cursor: pointer;
+        font-size: 13px; font-weight: 700; color: #1d4ed8;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        flex: 1; min-width: 0;
       }
-      .mt-swap-btn {
-        cursor: pointer; display: flex; align-items: center;
-        padding: 2px 0 2px 2px;
-      }
+      .mt-chevron { font-size: 10px; color: #60a5fa; flex-shrink: 0; }
+
       .mt-avatar {
-        width: 30px; height: 30px; border-radius: 50%;
+        flex-shrink: 0;
+        width: 32px; height: 32px; border-radius: 50%;
         background: linear-gradient(135deg, #3b82f6, #1d4ed8);
         color: #fff; font-weight: 700; font-size: 11px;
-        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
         cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
       }
 
       /* ── Bottom tab bar ── */
@@ -220,6 +236,8 @@ import { ApiService } from '../shared/services/api.service';
       box-shadow: 0 8px 40px rgba(0,0,0,0.18);
       text-align: center;
     }
+    /* Oculta elementos exclusivos do mobile no desktop */
+    .lo-handle, .lo-user-row, .lo-sep { display: none; }
     .lo-icon {
       width: 56px; height: 56px; border-radius: 50%;
       background: #fff1f0; margin: 0 auto 16px;
@@ -238,22 +256,62 @@ import { ApiService } from '../shared/services/api.service';
     .lo-cancel  { background: #f5f5f5; color: #555; }
     .lo-confirm { background: #ff4d4f; color: #fff; }
 
-    @keyframes lo-fade   { from { opacity: 0; }             to { opacity: 1; } }
-    @keyframes lo-slide  { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @keyframes lo-fade  { from { opacity: 0; }            to { opacity: 1; } }
+    @keyframes lo-slide { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
     @media (max-width: 1024px) {
       .logout-card {
         top: unset; left: 0; right: 0; bottom: 0;
         transform: none; width: 100%;
         border-radius: 20px 20px 0 0;
-        padding: 28px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+        padding: 0 20px calc(20px + env(safe-area-inset-bottom, 0px));
+        text-align: left;
         animation: lo-slide 0.25s ease;
       }
-      .lo-icon  { width: 64px; height: 64px; font-size: 28px; margin-bottom: 18px; }
-      .lo-title { font-size: 18px; margin-bottom: 10px; }
-      .lo-desc  { font-size: 14px; margin-bottom: 28px; }
-      .lo-btns  { flex-direction: column-reverse; gap: 10px; }
-      .lo-btns button { height: 52px; font-size: 15px; border-radius: 12px; }
+      /* Drag handle */
+      .lo-handle {
+        display: block;
+        width: 40px; height: 4px; border-radius: 2px;
+        background: #e2e8f0; margin: 14px auto 22px;
+      }
+      /* Bloco do usuário logado */
+      .lo-user-row {
+        display: flex; align-items: center; gap: 12px;
+        background: #f8faff; border: 1px solid #dbeafe;
+        border-radius: 12px; padding: 12px 14px;
+        margin-bottom: 20px;
+      }
+      .lo-user-av {
+        flex-shrink: 0;
+        width: 42px; height: 42px; border-radius: 50%;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: #fff; font-weight: 700; font-size: 14px;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .lo-user-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+      .lo-user-nome {
+        font-size: 14px; font-weight: 600; color: #1a1a1a;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .lo-user-email {
+        font-size: 12px; color: #94a3b8;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      /* Separador */
+      .lo-sep { display: block; height: 1px; background: #f0f4f8; margin-bottom: 20px; }
+      /* Oculta ícone do desktop no mobile */
+      .lo-icon   { display: none; }
+      .lo-title  { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+      .lo-desc   { font-size: 13px; color: #94a3b8; line-height: 1.55; margin-bottom: 24px; }
+      /* Botões empilhados: Sair em cima, Cancelar embaixo */
+      .lo-btns { flex-direction: column; gap: 12px; }
+      .lo-btns button { width: 100%; flex: none; }
+      .lo-confirm { height: 54px; font-size: 16px; border-radius: 14px; }
+      .lo-cancel  {
+        height: 50px; font-size: 15px; border-radius: 14px;
+        background: #f1f5f9; color: #64748b;
+      }
+      .lo-btns button:active { opacity: 0.75; }
     }
   `],
   template: `
@@ -261,28 +319,19 @@ import { ApiService } from '../shared/services/api.service';
 
       <!-- ══ MOBILE TOP BAR ══ -->
       <div class="mobile-topbar">
-        <div class="mt-brand">
-          <div class="mt-logo">
-            <span nz-icon nzType="trophy" nzTheme="outline"></span>
-          </div>
-          <span class="mt-title">Carnês</span>
+        <div class="mt-logo">
+          <span nz-icon nzType="trophy" nzTheme="outline"></span>
         </div>
-        <div class="mt-right">
-          <div class="mt-campanha">
-            <span class="mt-camp-nome"
-                  [nz-tooltip]="campanhaAtiva.campanha()?.nome"
-                  nzTooltipTrigger="click"
-                  nzTooltipPlacement="bottom">{{ campanhaAtiva.campanha()?.nome }}</span>
-            <span class="mt-swap-btn" (click)="trocarCampanha()">
-              <span nz-icon nzType="swap" style="font-size:11px; color:#3b82f6"></span>
-            </span>
-          </div>
-          <div class="mt-avatar" (click)="confirmarLogout()"
-               [nz-tooltip]="auth.usuario()?.nome ?? ''"
-               nzTooltipPlacement="bottom">
-            {{ iniciais }}
-          </div>
-        </div>
+
+        <button class="mt-camp-btn" (click)="trocarCampanha()">
+          <span class="mt-camp-label">Campanha ativa</span>
+          <span class="mt-camp-row">
+            <span class="mt-camp-nome">{{ campanhaAtiva.campanha()?.nome }}</span>
+            <span nz-icon nzType="down" class="mt-chevron"></span>
+          </span>
+        </button>
+
+        <div class="mt-avatar" (click)="confirmarLogout()">{{ iniciais }}</div>
       </div>
 
       <!-- ══════════ SIDEBAR (desktop) ══════════ -->
@@ -411,12 +460,21 @@ import { ApiService } from '../shared/services/api.service';
     <ng-container *ngIf="logoutVisivel">
       <div class="logout-overlay" (click)="logoutVisivel = false"></div>
       <div class="logout-card">
+        <div class="lo-handle"></div>
+        <div class="lo-user-row">
+          <div class="lo-user-av">{{ iniciais }}</div>
+          <div class="lo-user-info">
+            <span class="lo-user-nome">{{ auth.usuario()?.nome }}</span>
+            <span class="lo-user-email">{{ auth.usuario()?.email }}</span>
+          </div>
+        </div>
+        <div class="lo-sep"></div>
         <div class="lo-icon"><span nz-icon nzType="logout" nzTheme="outline"></span></div>
         <div class="lo-title">Sair da conta</div>
-        <div class="lo-desc">Tem certeza que deseja sair?<br>Você precisará fazer login novamente.</div>
+        <div class="lo-desc">Tem certeza que deseja encerrar a sessão?<br>Você precisará fazer login novamente.</div>
         <div class="lo-btns">
-          <button class="lo-cancel"  (click)="logoutVisivel = false">Cancelar</button>
           <button class="lo-confirm" (click)="auth.logout()">Sair</button>
+          <button class="lo-cancel"  (click)="logoutVisivel = false">Cancelar</button>
         </div>
       </div>
     </ng-container>

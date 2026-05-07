@@ -6,6 +6,7 @@ COPY . .
 RUN npx prisma generate && npm run build
 
 FROM node:20-bullseye-slim
+RUN apt-get update && apt-get install -y --no-install-recommends tzdata && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev

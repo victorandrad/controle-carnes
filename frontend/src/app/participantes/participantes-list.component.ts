@@ -54,6 +54,12 @@ import { CampanhaAtivaService } from '../shared/services/campanha-ativa.service'
       padding: 12px 16px; margin-bottom: 12px;
     }
 
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
     /* ── desktop table ─────────────────────────────── */
     .avatar-cell {
       width: 34px; height: 34px; border-radius: 50%;

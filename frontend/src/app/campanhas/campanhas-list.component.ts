@@ -180,7 +180,7 @@ function localDateStr(d: Date): string {
     @keyframes lo-fade  { from { opacity: 0; }             to { opacity: 1; } }
     @keyframes lo-slide { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 768px) {
       .logout-card {
         top: unset; left: 0; right: 0; bottom: 0;
         transform: none; width: 100%;
@@ -196,7 +196,7 @@ function localDateStr(d: Date): string {
     }
 
     /* ── mobile ──────────────────────────────────────── */
-    @media (max-width: 1024px) {
+    @media (max-width: 768px) {
       .topbar { padding: 0 12px; min-height: 52px; }
       .topbar-sub { display: none; }
       .topbar-title { font-size: 14px; }

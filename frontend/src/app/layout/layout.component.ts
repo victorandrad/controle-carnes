@@ -118,7 +118,7 @@ import { ApiService } from '../shared/services/api.service';
     .bottom-tabs   { display: none; }
 
     /* ── Mobile ──────────────────────────────────────── */
-    @media (max-width: 1024px) {
+    @media (max-width: 768px) {
       /* Hide desktop chrome */
       .sider  { display: none !important; }
       .header { display: none !important; }
@@ -259,7 +259,7 @@ import { ApiService } from '../shared/services/api.service';
     @keyframes lo-fade  { from { opacity: 0; }            to { opacity: 1; } }
     @keyframes lo-slide { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 768px) {
       .logout-card {
         top: unset; left: 0; right: 0; bottom: 0;
         transform: none; width: 100%;
@@ -512,7 +512,7 @@ export class LayoutComponent implements OnInit {
 
   @HostListener('window:resize')
   updateMobile() {
-    this.isMobile = window.innerWidth < 1024;
+    this.isMobile = window.innerWidth < 768;
     if (!this.isMobile) this.mobileOpen = false;
   }
 

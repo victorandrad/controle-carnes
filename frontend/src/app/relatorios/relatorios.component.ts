@@ -84,7 +84,7 @@ import { BrlPipe } from '../shared/pipes/brl.pipe';
     /* ══════════════════════════════════════════════════
        MOBILE
     ══════════════════════════════════════════════════ */
-    @media (max-width: 1024px) {
+    @media (max-width: 768px) {
 
       /* ── stats grid 2×2 ── */
       .stats-grid {

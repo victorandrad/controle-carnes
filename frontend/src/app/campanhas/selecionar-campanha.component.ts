@@ -156,7 +156,7 @@ import { AuthService } from '../auth/auth.service';
     @keyframes lo-fade  { from { opacity: 0; }             to { opacity: 1; } }
     @keyframes lo-slide { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 768px) {
       .logout-card {
         top: unset; left: 0; right: 0; bottom: 0;
         transform: none; width: 100%;
@@ -172,7 +172,7 @@ import { AuthService } from '../auth/auth.service';
     }
 
     /* ── mobile ──────────────────────────────────────── */
-    @media (max-width: 1024px) {
+    @media (max-width: 768px) {
       .page { padding: 24px 16px; justify-content: flex-start; }
       .brand { margin-bottom: 20px; margin-top: 16px; }
       .brand-icon { width: 52px; height: 52px; font-size: 24px; border-radius: 14px; }

@@ -97,6 +97,16 @@ body {
     flex-shrink: 0;
   }
 
+  /* Previne zoom automático do iOS ao focar inputs (dispara quando font-size < 16px) */
+  input, select, textarea,
+  .ant-input,
+  .ant-input-affix-wrapper input,
+  .ant-select-selection-search-input,
+  .ant-picker-input input,
+  .ant-input-number-input {
+    font-size: 16px !important;
+  }
+
   /* Tabelas com scroll horizontal */
   .ant-table-container { overflow-x: auto; }
 

@@ -318,7 +318,7 @@ function localDateStr(d: Date): string {
     .carne-header-sub   { font-size: 13px; color: #888; }
 
     /* ═══════════════ MOBILE ═══════════════════════════ */
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
       .root {
         grid-template-columns: 1fr;
         height: auto;

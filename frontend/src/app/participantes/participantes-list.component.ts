@@ -130,7 +130,7 @@ import { CampanhaAtivaService } from '../shared/services/campanha-ativa.service'
     /* ══════════════════════════════════════════════════
        MOBILE
     ══════════════════════════════════════════════════ */
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
 
       /* ── page header ── */
       .page-header { margin-bottom: 12px; }

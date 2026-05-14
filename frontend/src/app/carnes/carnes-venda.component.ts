@@ -181,7 +181,7 @@ import { BrlPipe } from '../shared/pipes/brl.pipe';
     .part-item .pi-arrow { color: #d9d9d9; font-size: 12px; flex-shrink: 0; }
 
     /* ── mobile overrides ─────────────────────────────── */
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
       .root      { grid-template-columns: 1fr; height: auto; overflow: visible; }
       .right-col { overflow: visible; gap: 0; }
       .conteudo  { grid-template-columns: 1fr; overflow: visible; gap: 0; }

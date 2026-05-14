@@ -118,7 +118,7 @@ import { ApiService } from '../shared/services/api.service';
     .bottom-tabs   { display: none; }
 
     /* ── Mobile ──────────────────────────────────────── */
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
       /* Hide desktop chrome */
       .sider  { display: none !important; }
       .header { display: none !important; }
@@ -193,19 +193,25 @@ import { ApiService } from '../shared/services/api.service';
         border-top: 1px solid #f0f0f0;
         box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
         padding-bottom: env(safe-area-inset-bottom, 0px);
+        overflow: hidden;
       }
       .tab-item {
-        flex: 1; display: flex; flex-direction: column;
+        flex: 1; min-width: 0; overflow: hidden;
+        display: flex; flex-direction: column;
         align-items: center; justify-content: center;
-        gap: 3px; padding: 8px 4px 6px;
+        gap: 3px; padding: 10px 6px 8px;
         text-decoration: none; color: #aaa;
         font-size: 10px; font-weight: 500;
         transition: color 0.15s;
         -webkit-tap-highlight-color: transparent;
       }
+      .tab-item span:last-child {
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        max-width: 100%;
+      }
       .tab-item .tab-icon {
-        font-size: 20px; line-height: 1; display: flex; align-items: center;
-        transition: transform 0.15s;
+        font-size: 22px; line-height: 1; display: flex; align-items: center;
+        transition: transform 0.15s; flex-shrink: 0;
       }
       .tab-item.tab-active { color: #3b82f6; }
       .tab-item.tab-active .tab-icon { transform: translateY(-1px); }
@@ -259,7 +265,7 @@ import { ApiService } from '../shared/services/api.service';
     @keyframes lo-fade  { from { opacity: 0; }            to { opacity: 1; } }
     @keyframes lo-slide { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
       .logout-card {
         top: unset; left: 0; right: 0; bottom: 0;
         transform: none; width: 100%;
@@ -512,7 +518,7 @@ export class LayoutComponent implements OnInit {
 
   @HostListener('window:resize')
   updateMobile() {
-    this.isMobile = window.innerWidth < 768;
+    this.isMobile = window.innerWidth < 1024;
     if (!this.isMobile) this.mobileOpen = false;
   }
 

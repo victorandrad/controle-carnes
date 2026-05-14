@@ -136,28 +136,21 @@ import { ApiService } from '../shared/services/api.service';
 
     /* ── Mobile ──────────────────────────────────────── */
     @media (max-width: 1024px) {
-      /* Preenche o host (que já tem height:100%) — sem position:fixed */
-      .app-root {
-        height: 100%;
-        flex-direction: column;
-        overflow: hidden;
-        min-height: unset;
-      }
+      /* app-root é só um container neutro — o layout é feito por fixed */
+      .app-root   { display: block; height: auto; min-height: unset; }
+      .sider      { display: none !important; }
+      .header     { display: none !important; }
+      .main-area  { display: block; }
 
-      .sider  { display: none !important; }
-      .header { display: none !important; }
-
-      /* Topbar — em fluxo normal (não fixed) */
+      /* Topbar: fixo no topo, independente de qualquer pai */
       .mobile-topbar {
         display: flex;
-        flex-shrink: 0;
+        position: fixed; top: 0; left: 0; right: 0; z-index: 100;
         height: 54px;
-        width: 100%;
         background: #fff;
         border-bottom: 1px solid #f0f0f0;
         align-items: center;
-        padding: 0 12px;
-        gap: 10px;
+        padding: 0 12px; gap: 10px;
         box-shadow: 0 1px 6px rgba(0,0,0,0.06);
       }
       .mt-logo {
@@ -175,9 +168,7 @@ import { ApiService } from '../shared/services/api.service';
         background: #f5f8ff;
         border: 1.5px solid #dbeafe;
         border-radius: 10px;
-        padding: 4px 12px;
-        height: 38px;
-        gap: 1px;
+        padding: 4px 12px; height: 38px; gap: 1px;
         cursor: pointer;
         -webkit-tap-highlight-color: transparent;
         transition: background 0.15s, border-color 0.15s;
@@ -203,38 +194,25 @@ import { ApiService } from '../shared/services/api.service';
         background: linear-gradient(135deg, #3b82f6, #1d4ed8);
         color: #fff; font-weight: 700; font-size: 11px;
         display: flex; align-items: center; justify-content: center;
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
+        cursor: pointer; -webkit-tap-highlight-color: transparent;
       }
 
-      /* main-area ocupa o espaço entre topbar e tabs */
-      .main-area {
-        flex: 1;
-        min-height: 0;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-      }
-
-      /* Área de conteúdo — único elemento que rola */
+      /* Conteúdo: fixo entre topbar e tabs — único elemento que rola */
       .page-content {
-        flex: 1;
-        min-height: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
+        position: fixed;
+        top: 54px; left: 0; right: 0;
+        bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+        overflow-y: auto; overflow-x: hidden;
         overscroll-behavior-y: contain;
         touch-action: pan-y;
         background: #f5f6fa;
       }
-      .content-wrap {
-        margin: 0;
-        padding: 12px;
-      }
+      .content-wrap { padding: 12px; }
 
-      /* Tab bar — em fluxo normal (não fixed) */
+      /* Tab bar: fixo no fundo, independente de qualquer pai */
       .bottom-tabs {
         display: flex;
-        flex-shrink: 0;
+        position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
         background: #fff;
         border-top: 1px solid #f0f0f0;
         box-shadow: 0 -2px 12px rgba(0,0,0,0.06);

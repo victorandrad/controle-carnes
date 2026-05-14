@@ -31,9 +31,17 @@ body {
 /* Tag no margin */
 .ant-tag { margin-right: 0; }
 
-/* Modal width default */
-.ant-modal-content { border-radius: 10px; overflow: hidden; }
-.ant-modal-header { border-radius: 10px 10px 0 0; }
+/* Modal: scroll quando conteúdo excede a altura da tela */
+.ant-modal-content {
+  border-radius: 10px;
+  overflow: hidden;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+.ant-modal-header { border-radius: 10px 10px 0 0; flex-shrink: 0; }
+.ant-modal-body   { overflow-y: auto; flex: 1; }
+.ant-modal-footer { flex-shrink: 0; }
 
 /* ── Mobile global ─────────────────────────────────────────── */
 @media (max-width: 1024px) {

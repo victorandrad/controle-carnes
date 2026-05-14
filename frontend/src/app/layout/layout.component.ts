@@ -134,12 +134,14 @@ import { ApiService } from '../shared/services/api.service';
 
     /* ── Mobile ──────────────────────────────────────── */
     @media (max-width: 1024px) {
-      /* Coluna de altura exata — sem overflow de página */
+      /* Coluna fixada na viewport — sem overflow de página */
       .app-root {
+        position: fixed;
+        inset: 0;
         flex-direction: column;
-        height: 100dvh;
         overflow: hidden;
         min-height: unset;
+        height: auto;
       }
 
       .sider  { display: none !important; }

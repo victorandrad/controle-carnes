@@ -37,6 +37,9 @@ body {
 
 /* ── Mobile global ─────────────────────────────────────────── */
 @media (max-width: 1024px) {
+  /* Trava scroll de documento — só page-content rola */
+  html, body { height: 100%; overflow: hidden; touch-action: pan-y; }
+
   /* Bottom-sheet modals */
   .ant-modal-wrap {
     padding: 0 !important;

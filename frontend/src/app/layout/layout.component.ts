@@ -134,18 +134,30 @@ import { ApiService } from '../shared/services/api.service';
     .mobile-topbar { display: none; }
     .bottom-tabs   { display: none; }
 
-    /* ── Mobile ──────────────────────────────────────── */
+    /* ── Mobile: :host vira o viewport container ─────── */
+    /* position:fixed no :host = novo containing block para TODOS os filhos.
+       Filhos com position:absolute são relativos a :host (viewport-sized).
+       Isso é mais confiável que position:fixed em filhos no iOS/Chrome iPad. */
     @media (max-width: 1024px) {
-      /* app-root é só um container neutro — o layout é feito por fixed */
-      .app-root   { display: block; height: auto; min-height: unset; }
-      .sider      { display: none !important; }
-      .header     { display: none !important; }
-      .main-area  { display: block; }
+      :host {
+        position: fixed !important;
+        inset: 0 !important;
+        overflow: hidden !important;
+      }
 
-      /* Topbar: fixo no topo, independente de qualquer pai */
+      /* .app-root vira passthrough absoluto que preenche :host */
+      .app-root {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+      .sider  { display: none !important; }
+      .header { display: none !important; }
+
+      /* Topbar: absolute dentro de :host = sempre no topo do viewport */
       .mobile-topbar {
         display: flex;
-        position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+        position: absolute; top: 0; left: 0; right: 0; z-index: 100;
         height: 54px;
         background: #fff;
         border-bottom: 1px solid #f0f0f0;
@@ -197,27 +209,38 @@ import { ApiService } from '../shared/services/api.service';
         cursor: pointer; -webkit-tap-highlight-color: transparent;
       }
 
-      /* Conteúdo: fixo entre topbar e tabs — único elemento que rola */
-      .page-content {
-        position: fixed;
+      /* Main area: absolute entre topbar e tabs, scroll interno */
+      .main-area {
+        position: absolute;
         top: 54px; left: 0; right: 0;
         bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+        min-height: unset;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* page-content é flex child que cresce e rola dentro de .main-area */
+      .page-content {
+        flex: 1;
         overflow-y: auto; overflow-x: hidden;
         overscroll-behavior-y: contain;
+        -webkit-overflow-scrolling: touch;
         touch-action: pan-y;
         background: #f5f6fa;
       }
       .content-wrap { padding: 12px; }
 
-      /* Tab bar: fixo no fundo, independente de qualquer pai */
+      /* Tab bar: absolute no fundo de :host */
       .bottom-tabs {
         display: flex;
-        position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+        position: absolute; bottom: 0; left: 0; right: 0; z-index: 100;
         background: #fff;
         border-top: 1px solid #f0f0f0;
         box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
         padding-bottom: env(safe-area-inset-bottom, 0px);
         overflow: hidden;
+        align-items: stretch;
       }
       .tab-item {
         flex: 1; min-width: 0; overflow: hidden;

@@ -37,9 +37,15 @@ body {
 
 /* ── Mobile global ─────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  /* Chrome/Safari no mobile ignoram overflow:hidden no body para touch scroll.
-     position:fixed no app-layout é a única forma 100% confiável de travar. */
-  html, body { overflow: hidden; height: 100%; }
+  /* overscroll-behavior:none elimina o bounce elástico do iOS no scroll boundary.
+     overflow:hidden no html/body + position:fixed no :host (layout.component)
+     garantem que o documento nunca rola. */
+  html, body {
+    overflow: hidden;
+    height: 100%;
+    overscroll-behavior: none;
+  }
+  /* Fallback: :host do layout já aplica position:fixed via component styles */
   app-layout {
     position: fixed;
     inset: 0;

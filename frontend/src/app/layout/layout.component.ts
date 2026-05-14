@@ -93,7 +93,7 @@ import { ApiService } from '../shared/services/api.service';
     .collapse-icon { width: 32px; height: 32px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center; font-size: 15px; }
 
-    /* ── Main area (beside sidebar on desktop) ───────── */
+    /* ── Main area ───────────────────────────────────── */
     .main-area {
       flex: 1;
       display: flex;
@@ -128,31 +128,29 @@ import { ApiService } from '../shared/services/api.service';
     .page-content { flex: 1; }
     .content-wrap { margin: 20px; }
 
-    /* ── Mobile-only elements (hidden on desktop) ────── */
+    /* ── Mobile-only: hidden on desktop ──────────────── */
     .mobile-topbar { display: none; }
     .bottom-tabs   { display: none; }
 
     /* ── Mobile ──────────────────────────────────────── */
     @media (max-width: 1024px) {
-      /* Root shell ocupa exatamente a viewport — sem overflow */
+      /* Coluna de altura exata — sem overflow de página */
       .app-root {
-        position: fixed;
-        inset: 0;
+        flex-direction: column;
+        height: 100dvh;
         overflow: hidden;
-        display: block;
+        min-height: unset;
       }
 
-      /* Hide desktop chrome */
-      .sider       { display: none !important; }
-      .header      { display: none !important; }
-      .main-area   { display: contents; }
-      .page-content { display: contents; }
+      .sider  { display: none !important; }
+      .header { display: none !important; }
 
-      /* ── Mobile top bar ── */
+      /* Topbar — em fluxo normal (não fixed) */
       .mobile-topbar {
         display: flex;
-        position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+        flex-shrink: 0;
         height: 54px;
+        width: 100%;
         background: #fff;
         border-bottom: 1px solid #f0f0f0;
         align-items: center;
@@ -207,12 +205,19 @@ import { ApiService } from '../shared/services/api.service';
         -webkit-tap-highlight-color: transparent;
       }
 
-      /* ── Scroll container — único elemento que rola ── */
-      .mobile-scroller {
-        position: fixed;
-        top: 54px;
-        left: 0; right: 0;
-        bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+      /* main-area ocupa o espaço entre topbar e tabs */
+      .main-area {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Área de conteúdo — único elemento que rola */
+      .page-content {
+        flex: 1;
+        min-height: 0;
         overflow-y: auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
@@ -222,13 +227,12 @@ import { ApiService } from '../shared/services/api.service';
       .content-wrap {
         margin: 0;
         padding: 12px;
-        min-height: 100%;
       }
 
-      /* ── Bottom tab bar ── */
+      /* Tab bar — em fluxo normal (não fixed) */
       .bottom-tabs {
         display: flex;
-        position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+        flex-shrink: 0;
         background: #fff;
         border-top: 1px solid #f0f0f0;
         box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
@@ -454,10 +458,8 @@ import { ApiService } from '../shared/services/api.service';
 
         <!-- Page content -->
         <div class="page-content">
-          <div [class.mobile-scroller]="isMobile">
-            <div class="content-wrap">
-              <router-outlet />
-            </div>
+          <div class="content-wrap">
+            <router-outlet />
           </div>
         </div>
       </div>

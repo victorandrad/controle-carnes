@@ -37,12 +37,6 @@ body {
 
 /* ── Mobile global ─────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  /* Trava o documento no tamanho da viewport — sem scroll de página */
-  html, body {
-    height: 100%;
-    overflow: hidden;
-  }
-
   /* Bottom-sheet modals */
   .ant-modal-wrap {
     padding: 0 !important;

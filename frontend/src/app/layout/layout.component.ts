@@ -21,6 +21,8 @@ import { ApiService } from '../shared/services/api.service';
     NzToolTipModule,
   ],
   styles: [`
+    :host { display: block; }
+
     /* ── Root shell ──────────────────────────────────── */
     .app-root {
       display: flex;
@@ -134,14 +136,12 @@ import { ApiService } from '../shared/services/api.service';
 
     /* ── Mobile ──────────────────────────────────────── */
     @media (max-width: 1024px) {
-      /* Coluna fixada na viewport — sem overflow de página */
+      /* Preenche o host (que já tem height:100%) — sem position:fixed */
       .app-root {
-        position: fixed;
-        inset: 0;
+        height: 100%;
         flex-direction: column;
         overflow: hidden;
         min-height: unset;
-        height: auto;
       }
 
       .sider  { display: none !important; }
@@ -222,8 +222,8 @@ import { ApiService } from '../shared/services/api.service';
         min-height: 0;
         overflow-y: auto;
         overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
         overscroll-behavior-y: contain;
+        touch-action: pan-y;
         background: #f5f6fa;
       }
       .content-wrap {
@@ -519,7 +519,7 @@ export class LayoutComponent implements OnInit {
   private api = inject(ApiService);
 
   collapsed = false;
-  isMobile = false;
+  isMobile = window.innerWidth <= 1024;
   mobileOpen = false;
   logoutVisivel = false;
 
@@ -544,7 +544,7 @@ export class LayoutComponent implements OnInit {
 
   @HostListener('window:resize')
   updateMobile() {
-    this.isMobile = window.innerWidth < 1024;
+    this.isMobile = window.innerWidth <= 1024;
     if (!this.isMobile) this.mobileOpen = false;
   }
 

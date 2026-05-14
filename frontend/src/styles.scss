@@ -37,8 +37,10 @@ body {
 
 /* ── Mobile global ─────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  /* Trava scroll de documento — só page-content rola */
-  html, body { height: 100%; overflow: hidden; touch-action: pan-y; }
+  /* Trava toda a cadeia DOM na altura da viewport */
+  html, body, app-root, app-layout { height: 100%; overflow: hidden; }
+  /* Previne scroll de documento via touch */
+  html, body { touch-action: none; }
 
   /* Bottom-sheet modals */
   .ant-modal-wrap {

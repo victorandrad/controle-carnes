@@ -37,10 +37,15 @@ body {
 
 /* ── Mobile global ─────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  /* Trava toda a cadeia DOM na altura da viewport */
-  html, body, app-root, app-layout { height: 100%; overflow: hidden; }
-  /* Previne scroll de documento via touch */
-  html, body { touch-action: none; }
+  /* Chrome/Safari no mobile ignoram overflow:hidden no body para touch scroll.
+     position:fixed no app-layout é a única forma 100% confiável de travar. */
+  html, body { overflow: hidden; height: 100%; }
+  app-layout {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    display: block;
+  }
 
   /* Bottom-sheet modals */
   .ant-modal-wrap {

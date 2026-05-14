@@ -1,11 +1,9 @@
 import { Component, inject, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { AuthService } from '../auth/auth.service';
 import { CampanhaAtivaService } from '../shared/services/campanha-ativa.service';
 import { ApiService } from '../shared/services/api.service';
@@ -18,20 +16,25 @@ import { ApiService } from '../shared/services/api.service';
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    NzLayoutModule,
     NzIconModule,
     NzButtonModule,
     NzToolTipModule,
-    NzDropDownModule,
   ],
   styles: [`
+    /* ── Root shell ──────────────────────────────────── */
+    .app-root {
+      display: flex;
+      min-height: 100dvh;
+      background: #f5f6fa;
+    }
+
     /* ── Sidebar (desktop) ───────────────────────────── */
     .sider {
       position: fixed; top: 0; left: 0;
-      height: 100vh; display: flex; flex-direction: column;
+      height: 100dvh; display: flex; flex-direction: column;
       background: #fff;
       box-shadow: 2px 0 12px rgba(0,0,0,0.08);
-      transition: width 0.22s ease, transform 0.22s ease;
+      transition: width 0.22s ease;
       z-index: 200; overflow: hidden;
     }
     .sider.expanded  { width: 220px; }
@@ -51,8 +54,8 @@ import { ApiService } from '../shared/services/api.service';
     .logo-title { color: #1a1a1a; font-size: 15px; font-weight: 700; margin: 0; white-space: nowrap; }
     .logo-sub   { color: #888; font-size: 11px; margin: 0; white-space: nowrap; }
 
-    nav { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 8px; }
-    nav::-webkit-scrollbar { width: 0; }
+    .side-nav { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 8px; }
+    .side-nav::-webkit-scrollbar { width: 0; }
     .nav-section { margin-bottom: 4px; }
     .nav-label {
       font-size: 10px; font-weight: 600; letter-spacing: 1px;
@@ -90,13 +93,22 @@ import { ApiService } from '../shared/services/api.service';
     .collapse-icon { width: 32px; height: 32px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center; font-size: 15px; }
 
+    /* ── Main area (beside sidebar on desktop) ───────── */
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+      transition: margin-left 0.22s ease;
+    }
+
     /* ── Desktop header ──────────────────────────────── */
     .header {
       background: #fff; height: 56px;
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 24px; border-bottom: 1px solid #f0f0f0;
       box-shadow: 0 1px 4px rgba(0,21,41,.06);
-      position: sticky; top: 0; z-index: 10;
+      position: sticky; top: 0; z-index: 10; flex-shrink: 0;
     }
     .header-left  { display: flex; align-items: center; gap: 10px; }
     .header-right { display: flex; align-items: center; gap: 14px; }
@@ -111,6 +123,9 @@ import { ApiService } from '../shared/services/api.service';
       cursor: pointer; flex-shrink: 0;
     }
     .user-name { font-size: 14px; color: #333; }
+
+    /* ── Page content (desktop) ──────────────────────── */
+    .page-content { flex: 1; }
     .content-wrap { margin: 20px; }
 
     /* ── Mobile-only elements (hidden on desktop) ────── */
@@ -119,9 +134,19 @@ import { ApiService } from '../shared/services/api.service';
 
     /* ── Mobile ──────────────────────────────────────── */
     @media (max-width: 1024px) {
+      /* Root shell ocupa exatamente a viewport — sem overflow */
+      .app-root {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        display: block;
+      }
+
       /* Hide desktop chrome */
-      .sider  { display: none !important; }
-      .header { display: none !important; }
+      .sider       { display: none !important; }
+      .header      { display: none !important; }
+      .main-area   { display: contents; }
+      .page-content { display: contents; }
 
       /* ── Mobile top bar ── */
       .mobile-topbar {
@@ -143,8 +168,6 @@ import { ApiService } from '../shared/services/api.service';
         font-size: 15px; color: #fff;
         box-shadow: 0 2px 6px rgba(59,130,246,0.25);
       }
-
-      /* Campaign selector — ocupa o centro, tap target generoso */
       .mt-camp-btn {
         flex: 1; min-width: 0;
         display: flex; flex-direction: column;
@@ -174,7 +197,6 @@ import { ApiService } from '../shared/services/api.service';
         flex: 1; min-width: 0;
       }
       .mt-chevron { font-size: 10px; color: #60a5fa; flex-shrink: 0; }
-
       .mt-avatar {
         flex-shrink: 0;
         width: 32px; height: 32px; border-radius: 50%;
@@ -183,6 +205,24 @@ import { ApiService } from '../shared/services/api.service';
         display: flex; align-items: center; justify-content: center;
         cursor: pointer;
         -webkit-tap-highlight-color: transparent;
+      }
+
+      /* ── Scroll container — único elemento que rola ── */
+      .mobile-scroller {
+        position: fixed;
+        top: 54px;
+        left: 0; right: 0;
+        bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+        background: #f5f6fa;
+      }
+      .content-wrap {
+        margin: 0;
+        padding: 12px;
+        min-height: 100%;
       }
 
       /* ── Bottom tab bar ── */
@@ -215,23 +255,6 @@ import { ApiService } from '../shared/services/api.service';
       }
       .tab-item.tab-active { color: #3b82f6; }
       .tab-item.tab-active .tab-icon { transform: translateY(-1px); }
-
-      /* Scroll container fixo — só o conteúdo rola, topbar e tabs ficam estáticas */
-      .mobile-scroller {
-        position: fixed;
-        top: 54px;
-        left: 0; right: 0;
-        bottom: calc(68px + env(safe-area-inset-bottom, 0px));
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-y: contain;
-      }
-      .content-wrap {
-        margin: 0;
-        padding: 12px;
-        min-height: 100%;
-      }
     }
 
     /* ── Logout confirmation ─────────────────────────── */
@@ -252,7 +275,6 @@ import { ApiService } from '../shared/services/api.service';
       box-shadow: 0 8px 40px rgba(0,0,0,0.18);
       text-align: center;
     }
-    /* Oculta elementos exclusivos do mobile no desktop */
     .lo-handle, .lo-user-row, .lo-sep { display: none; }
     .lo-icon {
       width: 56px; height: 56px; border-radius: 50%;
@@ -284,13 +306,11 @@ import { ApiService } from '../shared/services/api.service';
         text-align: left;
         animation: lo-slide 0.25s ease;
       }
-      /* Drag handle */
       .lo-handle {
         display: block;
         width: 40px; height: 4px; border-radius: 2px;
         background: #e2e8f0; margin: 14px auto 22px;
       }
-      /* Bloco do usuário logado */
       .lo-user-row {
         display: flex; align-items: center; gap: 12px;
         background: #f8faff; border: 1px solid #dbeafe;
@@ -313,13 +333,10 @@ import { ApiService } from '../shared/services/api.service';
         font-size: 12px; color: #94a3b8;
         white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       }
-      /* Separador */
       .lo-sep { display: block; height: 1px; background: #f0f4f8; margin-bottom: 20px; }
-      /* Oculta ícone do desktop no mobile */
       .lo-icon   { display: none; }
       .lo-title  { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
       .lo-desc   { font-size: 13px; color: #94a3b8; line-height: 1.55; margin-bottom: 24px; }
-      /* Botões empilhados: Sair em cima, Cancelar embaixo */
       .lo-btns { flex-direction: column; gap: 12px; }
       .lo-btns button { width: 100%; flex: none; }
       .lo-confirm { height: 54px; font-size: 16px; border-radius: 14px; }
@@ -331,14 +348,13 @@ import { ApiService } from '../shared/services/api.service';
     }
   `],
   template: `
-    <nz-layout style="min-height:100dvh">
+    <div class="app-root">
 
       <!-- ══ MOBILE TOP BAR ══ -->
       <div class="mobile-topbar">
         <div class="mt-logo">
           <span nz-icon nzType="trophy" nzTheme="outline"></span>
         </div>
-
         <button class="mt-camp-btn" (click)="trocarCampanha()">
           <span class="mt-camp-label">Campanha ativa</span>
           <span class="mt-camp-row">
@@ -346,15 +362,13 @@ import { ApiService } from '../shared/services/api.service';
             <span nz-icon nzType="down" class="mt-chevron"></span>
           </span>
         </button>
-
         <div class="mt-avatar" (click)="confirmarLogout()">{{ iniciais }}</div>
       </div>
 
-      <!-- ══════════ SIDEBAR (desktop) ══════════ -->
+      <!-- ══ SIDEBAR (desktop) ══ -->
       <div class="sider"
            [class.expanded]="!collapsed"
            [class.collapsed]="collapsed">
-
         <div class="logo">
           <div class="logo-icon">
             <span nz-icon nzType="trophy" nzTheme="outline"></span>
@@ -364,8 +378,7 @@ import { ApiService } from '../shared/services/api.service';
             <p class="logo-sub">Sistema de campanhas</p>
           </div>
         </div>
-
-        <nav>
+        <div class="side-nav">
           <div class="nav-section">
             <div class="nav-label" *ngIf="!collapsed">Geral</div>
             <a class="nav-item" routerLink="/participantes" routerLinkActive="active"
@@ -395,8 +408,7 @@ import { ApiService } from '../shared/services/api.service';
               <span class="nav-txt" *ngIf="!collapsed">Relatórios</span>
             </a>
           </div>
-        </nav>
-
+        </div>
         <div class="sider-footer">
           <button class="collapse-btn" (click)="collapsed = !collapsed"
                   [nz-tooltip]="collapsed ? 'Expandir menu' : ''" nzTooltipPlacement="right">
@@ -408,12 +420,12 @@ import { ApiService } from '../shared/services/api.service';
         </div>
       </div>
 
-      <!-- ══════════ CONTEÚDO ══════════ -->
-      <nz-layout [style.margin-left]="isMobile ? '0' : (collapsed ? '64px' : '220px')"
-                 style="transition:margin-left 0.22s ease; min-height:100dvh">
+      <!-- ══ MAIN AREA ══ -->
+      <div class="main-area"
+           [style.margin-left]="isMobile ? '0' : (collapsed ? '64px' : '220px')">
 
-        <!-- Header (desktop only) -->
-        <nz-header class="header">
+        <!-- Desktop header -->
+        <div class="header">
           <div class="header-left">
             <span nz-icon nzType="trophy" style="color:#3b82f6; font-size:16px"></span>
             <div class="campanha-bloco">
@@ -438,19 +450,19 @@ import { ApiService } from '../shared/services/api.service';
               <span class="user-name">Sair</span>
             </button>
           </div>
-        </nz-header>
+        </div>
 
-        <nz-content>
-          <!-- Mobile: scroll container fixo entre topbar e tabs -->
+        <!-- Page content -->
+        <div class="page-content">
           <div [class.mobile-scroller]="isMobile">
             <div class="content-wrap">
               <router-outlet />
             </div>
           </div>
-        </nz-content>
-      </nz-layout>
+        </div>
+      </div>
 
-      <!-- ══ MOBILE BOTTOM TAB BAR ══ -->
+      <!-- ══ MOBILE BOTTOM TABS ══ -->
       <nav class="bottom-tabs">
         <a class="tab-item" routerLink="/participantes" routerLinkActive="tab-active">
           <span class="tab-icon" nz-icon nzType="team"></span>
@@ -470,7 +482,7 @@ import { ApiService } from '../shared/services/api.service';
         </a>
       </nav>
 
-    </nz-layout>
+    </div>
 
     <!-- ══ LOGOUT CONFIRMATION ══ -->
     <ng-container *ngIf="logoutVisivel">

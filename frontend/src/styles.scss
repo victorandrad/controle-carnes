@@ -43,12 +43,6 @@ body {
     overflow: hidden;
   }
 
-  /* ng-zorro aplica flex-direction:row quando detecta .sider no DOM,
-     mesmo com display:none. Força coluna para o layout mobile funcionar. */
-  .ant-layout.ant-layout-has-sider {
-    flex-direction: column !important;
-  }
-
   /* Bottom-sheet modals */
   .ant-modal-wrap {
     padding: 0 !important;

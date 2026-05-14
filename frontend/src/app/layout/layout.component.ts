@@ -216,11 +216,21 @@ import { ApiService } from '../shared/services/api.service';
       .tab-item.tab-active { color: #3b82f6; }
       .tab-item.tab-active .tab-icon { transform: translateY(-1px); }
 
-      /* Content offset */
+      /* Scroll container fixo — só o conteúdo rola, topbar e tabs ficam estáticas */
+      .mobile-scroller {
+        position: fixed;
+        top: 54px;
+        left: 0; right: 0;
+        bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+      }
       .content-wrap {
         margin: 0;
-        padding: 12px 12px calc(env(safe-area-inset-bottom, 0px) + 68px);
-        padding-top: 0;
+        padding: 12px;
+        min-height: 100%;
       }
     }
 
@@ -431,8 +441,8 @@ import { ApiService } from '../shared/services/api.service';
         </nz-header>
 
         <nz-content>
-          <!-- Mobile: top padding = topbar height -->
-          <div [style.padding-top]="isMobile ? '54px' : '0'">
+          <!-- Mobile: scroll container fixo entre topbar e tabs -->
+          <div [class.mobile-scroller]="isMobile">
             <div class="content-wrap">
               <router-outlet />
             </div>

@@ -331,7 +331,7 @@ import { ApiService } from '../shared/services/api.service';
     }
   `],
   template: `
-    <nz-layout style="min-height:100vh">
+    <nz-layout style="min-height:100dvh">
 
       <!-- ══ MOBILE TOP BAR ══ -->
       <div class="mobile-topbar">
@@ -410,7 +410,7 @@ import { ApiService } from '../shared/services/api.service';
 
       <!-- ══════════ CONTEÚDO ══════════ -->
       <nz-layout [style.margin-left]="isMobile ? '0' : (collapsed ? '64px' : '220px')"
-                 style="transition:margin-left 0.22s ease; min-height:100vh">
+                 style="transition:margin-left 0.22s ease; min-height:100dvh">
 
         <!-- Header (desktop only) -->
         <nz-header class="header">
